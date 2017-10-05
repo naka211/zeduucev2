@@ -4,7 +4,7 @@ class Admin extends CI_Controller{
         parent::__construct();
         //$this->load->model('home_model', 'home');
 	}
-	public function index(){
+	public function index(){die('asdasd');
         if(!$this->session->userdata('isAdmin')){
             redirect(site_url('login'));
         }
