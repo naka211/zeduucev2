@@ -41,11 +41,12 @@
 $route['default_controller'] = "login";
 $route['404_override'] = '';
 
-/*$route['^vn/(.+)'] = "$1";
-$route['^en/(.+)'] = "$1";
+$route['^vn/(.+)'] = "$1";
+//$route['^en/(.+)'] = "$1";
+$route['^en/(.+)'] = "admin";
 $route['^dk/(.+)'] = "$1";
 $route['^vn$'] = $route['default_controller'];
 $route['^en$'] = $route['default_controller'];
-$route['^dk$'] = $route['default_controller'];*/
+$route['^dk$'] = $route['default_controller'];
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
