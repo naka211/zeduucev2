@@ -42,8 +42,8 @@ $route['default_controller'] = "login";
 $route['404_override'] = '';
 
 $route['^vn/(.+)'] = "$1";
-//$route['^en/(.+)'] = "$1";
-$route['^en/(.+)'] = "admin";
+$route['^en/(.+)'] = "$1";
+//$route['^en/(.+)'] = "admin";
 $route['^dk/(.+)'] = "$1";
 $route['^vn$'] = $route['default_controller'];
 $route['^en$'] = $route['default_controller'];
