@@ -2,12 +2,15 @@
 class Home extends MX_Controller {
     private $language = "";
     private $message = "";
+    private $_time = 300; // cache time
 	function __construct(){
         parent::__construct();
         $this->session->set_userdata(array('url'=>uri_string()));
         $this->load->model('user_model', 'user');
         $this->load->model('tilbud_model','tilbud');
         $this->language = $this->lang->lang();
+
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 
         $this->_meta = $this->general_model->getMetaDataFromUrl();
     }
@@ -31,33 +34,36 @@ class Home extends MX_Controller {
         }else{
             $ignore = "";
         }
-        $listUsers = $this->user->getList(20,0,NULL,$ignore);
-        if($listUsers){
-            $i=0;
-            foreach($listUsers as $row){
-                $users[$i]['id'] = $row->id;
-                $users[$i]['name'] = $row->name;
-                $users[$i]['birthday'] = $row->birthday;
-                $users[$i]['facebook'] = $row->facebook;
-                $users[$i]['code'] = $row->code;
-                $users[$i]['avatar'] = $row->avatar;
-                /*if($row->facebook && $row->avatar){
+
+        if ( ! $users = $this->cache->get('users'))
+        {
+            $listUsers = $this->user->getList(20,0,NULL,$ignore);
+            if($listUsers){
+                $i=0;
+                foreach($listUsers as $row){
+                    $users[$i]['id'] = $row->id;
+                    $users[$i]['name'] = $row->name;
+                    $users[$i]['birthday'] = $row->birthday;
+                    $users[$i]['facebook'] = $row->facebook;
+                    $users[$i]['code'] = $row->code;
                     $users[$i]['avatar'] = $row->avatar;
-                }else{
-                    $photo = $this->user->getPhoto($row->id);
-                    if($photo){
-                        $users[$i]['avatar'] = $photo[0]->image;
-                    }else{
-                        $users[$i]['avatar'] = "";
-                    }
-                }*/
-                $i++;
+                    $i++;
+                }
+            }else{
+                $users = "";
             }
-        }else{
-            $users = "";
+
+            $this->cache->save('users', $users, $this->_time);
         }
+
+        if ( ! $products = $this->cache->get('products')){
+            $products = $this->tilbud->getData(20,0);
+
+            $this->cache->save('products', $products, $this->_time);
+        }
+
         $data['listUser'] = $users;
-        $data['listPro'] = $this->tilbud->getData(20,0);
+        $data['listPro'] = $products;
         $data['user'] = $user;
 		$this->load->view('templates', $data);
 	}
